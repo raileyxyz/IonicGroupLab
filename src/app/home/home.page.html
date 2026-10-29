@@ -1,0 +1,201 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Group Activity</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page-header">
+    <p class="eyebrow">STUDENT DIRECTORY</p>
+    <h1>{{ title }}</h1>
+    <p class="description">View and manage student information.</p>
+  </div>
+
+  <div class="cards-container">
+    @for (student of students; track student.id) {
+
+    <ion-card class="student-card">
+      <ion-card-header>
+        <div class="student-header">
+          <div class="avatar">{{ student.name.charAt(0) }}</div>
+
+          <div class="student-heading">
+            <ion-card-title> {{ student.name }} </ion-card-title>
+
+            <ion-card-subtitle> ID: {{ student.id }} </ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="student-info">
+          <div class="info-item">
+            <span class="label">Gender</span>
+            <span class="value"> {{ student.gender }} </span>
+          </div>
+
+          <div class="info-item">
+            <span class="label">Course</span>
+            <span class="badge"> {{ student.course }} </span>
+          </div>
+
+          <div class="info-item">
+            <span class="label">Year Level</span>
+            <span class="badge"> Year {{ student.year }} </span>
+          </div>
+        </div>
+      </ion-card-content>
+
+      <div class="card-footer">
+        <ion-button
+          expand="block"
+          fill="outline"
+          class="edit-button"
+          (click)="openEditModal(student)"
+        >
+          Edit
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          class="view-button"
+          (click)="openViewModal(student)"
+        >
+          View Profile
+        </ion-button>
+      </div>
+    </ion-card>
+
+    }
+  </div>
+</ion-content>
+
+<ion-modal
+  [isOpen]="isModalOpen"
+  [initialBreakpoint]="0.85"
+  [breakpoints]="[0, 0.85, 1]"
+  [handle]="true"
+  (didDismiss)="closeModal()"
+  class="student-modal"
+>
+  <ng-template>
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <ion-title>
+          {{ modalMode === 'edit' ? 'Edit Student' : 'Student Profile' }}
+        </ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeModal()">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      @if (selectedStudent) { @if (modalMode === 'view') {
+      <div class="profile-hero">
+        <div class="profile-avatar">{{ selectedStudent.name.charAt(0) }}</div>
+        <h2>{{ selectedStudent.name }}</h2>
+        <p class="profile-id">Student ID: {{ selectedStudent.id }}</p>
+        <div class="profile-badges">
+          <span class="badge">Year {{ selectedStudent.year }}</span>
+          <span class="badge">{{ selectedStudent.gender }}</span>
+        </div>
+      </div>
+
+      <div class="detail-fields">
+        <ion-input
+          label="Full Name"
+          labelPlacement="stacked"
+          fill="outline"
+          [readonly]="true"
+          [value]="selectedStudent.name"
+        ></ion-input>
+
+        <ion-input
+          label="Gender"
+          labelPlacement="stacked"
+          fill="outline"
+          [readonly]="true"
+          [value]="selectedStudent.gender"
+        ></ion-input>
+
+        <ion-input
+          label="Course"
+          labelPlacement="stacked"
+          fill="outline"
+          [readonly]="true"
+          [value]="selectedStudent.course"
+        ></ion-input>
+
+        <ion-input
+          label="Year Level"
+          labelPlacement="stacked"
+          fill="outline"
+          [readonly]="true"
+          [value]="'Year ' + selectedStudent.year"
+        ></ion-input>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="outline" class="secondary-btn" (click)="closeModal()">
+          Close
+        </ion-button>
+        <ion-button
+          class="primary-btn"
+          (click)="openEditModal(selectedStudent)"
+        >
+          Edit Student
+        </ion-button>
+      </div>
+      } @else {
+      <p class="form-hint">Update the details below, then save your changes.</p>
+
+      <ion-input
+        label="Full Name"
+        labelPlacement="stacked"
+        fill="outline"
+        [(ngModel)]="editData.name"
+        (ionInput)="onInputChange()"
+      ></ion-input>
+
+      <ion-input
+        label="Gender"
+        labelPlacement="stacked"
+        fill="outline"
+        [(ngModel)]="editData.gender"
+        (ionInput)="onInputChange()"
+      ></ion-input>
+
+      <ion-input
+        label="Course"
+        labelPlacement="stacked"
+        fill="outline"
+        [(ngModel)]="editData.course"
+        (ionInput)="onInputChange()"
+      ></ion-input>
+
+      <ion-input
+        label="Year Level"
+        labelPlacement="stacked"
+        fill="outline"
+        type="number"
+        [(ngModel)]="editData.year"
+        (ionInput)="onInputChange()"
+      ></ion-input>
+
+      <div class="modal-actions">
+        <ion-button fill="outline" class="secondary-btn" (click)="closeModal()">
+          Cancel
+        </ion-button>
+        <ion-button
+          class="primary-btn"
+          [disabled]="!isEdited"
+          (click)="saveStudent()"
+        >
+          Save Changes
+        </ion-button>
+      </div>
+      } }
+    </ion-content>
+  </ng-template>
+</ion-modal>

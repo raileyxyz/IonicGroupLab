@@ -1,0 +1,7 @@
+{
+  "name": "ionicGroupLab",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
